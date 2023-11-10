@@ -72,13 +72,10 @@ if (isset($_POST['login'])) {
 
 // Search by User Agent feature for logged-in users
 if (isset($_POST['search']) && $_SESSION['logged_in']) {
-    $stmt = $conn->prepare("SELECT * FROM login_attempts WHERE username = ? AND useragent = ?");
-    $searchUserAgent = $_POST['search_useragent'];
-    $username = $_SESSION['username'];
-    $stmt->bind_param("ss", $username, $searchUserAgent);
+    $stmt = $conn->prepare("SELECT username, useragent, ip_address, attempt_time FROM login_attempts WHERE username = ? AND useragent = ?");
+    $stmt->bind_param("ss", $_SESSION['username'], $_POST['search_useragent']);
     $stmt->execute();
     $result = $stmt->get_result();
-
     echo "<h3>Search Results:</h3>";
     echo "<table><tr><th>Username</th><th>User Agent</th><th>IP Address</th><th>Attempt Time</th></tr>";
     while($row = $result->fetch_assoc()) {
